@@ -11,80 +11,93 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * An dumb utility class to create JMS connection.
- * It does not contain any logic to manage connections. It provides functionality for 
- * creation and closing of the connection.
+ * An dumb utility class to create JMS connection. It does not contain any logic
+ * to manage connections. It provides functionality for creation and closing of
+ * the connection.
  *
  * @author shuvro
  */
 public class SimpleConnectionProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(SimpleConnectionProvider.class);
-    private static AtomicReference<Connection> CONNECTION_ATOMIC_REFERENCE = new AtomicReference<>();
-    
-    private SimpleConnectionProvider(){}
-    
-	public static Connection createConnectionInstance(String brokerUrl, String userName, String password) throws JMSException {
-	    if (CONNECTION_ATOMIC_REFERENCE.get() == null) {
-            synchronized (CONNECTION_ATOMIC_REFERENCE) {
-                if (CONNECTION_ATOMIC_REFERENCE.get() == null) {
-                    Connection connection = createConnection(brokerUrl, userName, password);
-                    CONNECTION_ATOMIC_REFERENCE.set(connection);
-                }
-            }
-	    }
-	    
-	    return CONNECTION_ATOMIC_REFERENCE.get();
+	private static Logger logger = LoggerFactory
+			.getLogger(SimpleConnectionProvider.class);
+	private static AtomicReference<Connection> CONNECTION_ATOMIC_REFERENCE = new AtomicReference<>();
+
+	private SimpleConnectionProvider() {
 	}
-	
+
+	public static Connection createConnectionInstance(String brokerUrl,
+			String userName, String password) throws JMSException {
+		if (CONNECTION_ATOMIC_REFERENCE.get() == null) {
+			synchronized (CONNECTION_ATOMIC_REFERENCE) {
+				if (CONNECTION_ATOMIC_REFERENCE.get() == null) {
+					Connection connection = createConnection(brokerUrl,
+							userName, password);
+					CONNECTION_ATOMIC_REFERENCE.set(connection);
+				}
+			}
+		}
+
+		return CONNECTION_ATOMIC_REFERENCE.get();
+	}
+
 	/**
-	 * @param brokerUrl The JMS broker url
-	 * @param userId The user id
-	 * @param password The password
+	 * @param brokerUrl
+	 *            The JMS broker url
+	 * @param userId
+	 *            The user id
+	 * @param password
+	 *            The password
 	 * @return {@link Connection}
 	 * @throws JMSException
 	 */
-	private static Connection createConnection(String brokerUrl, String userId, String password) throws JMSException {
+	private static Connection createConnection(String brokerUrl, String userId,
+			String password) throws JMSException {
 
 		// Get a new instance of ConnectionFactory
-		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
-		// create a connection - providing the user id and password 
-		Connection connection = connectionFactory.createConnection(userId, password);
+		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+				brokerUrl);
+		// create a connection - providing the user id and password
+		Connection connection = connectionFactory.createConnection(userId,
+				password);
 		return connection;
 	}
 
 	/**
 	 *
-	 * @param ackMode The acknowledgement mode
+	 * @param ackMode
+	 *            The acknowledgement mode
 	 * @return A {@link Session} on the provided Connection
-	 * @throws JMSException An instance of {@link JMSException}
+	 * @throws JMSException
+	 *             An instance of {@link JMSException}
 	 */
 	public static Session getSession(int ackMode) throws JMSException {
-	    Session session = null;
-	    if(CONNECTION_ATOMIC_REFERENCE.get() != null) {
-	        boolean transacted = (ackMode == Session.SESSION_TRANSACTED ? true : false);
-	        session = CONNECTION_ATOMIC_REFERENCE.get().createSession(transacted, ackMode);
-        }else {
-        	logger.debug("A connection instance needs to be created first before trying to create session!");
-        }
-        return session;
+		Session session = null;
+		if (CONNECTION_ATOMIC_REFERENCE.get() != null) {
+			boolean transacted = (ackMode == Session.SESSION_TRANSACTED ? true
+					: false);
+			session = CONNECTION_ATOMIC_REFERENCE.get().createSession(
+					transacted, ackMode);
+		} else {
+			logger.debug("A connection instance needs to be created first before trying to create session!");
+		}
+		return session;
 	}
 
-    public static void closeConnection() {
-        if(CONNECTION_ATOMIC_REFERENCE.get() != null) {
-            synchronized (CONNECTION_ATOMIC_REFERENCE) {
-                if(CONNECTION_ATOMIC_REFERENCE.get() != null) {
-                    try {
-                        CONNECTION_ATOMIC_REFERENCE.get().close();
-                    }catch(JMSException jmse){
-                        jmse.printStackTrace();
-                        logger.debug(jmse.getMessage());
-                    }
-                    CONNECTION_ATOMIC_REFERENCE.set(null);
-                }
-            }
-        }
-    }
+	public static void closeConnection() {
+		if (CONNECTION_ATOMIC_REFERENCE.get() != null) {
+			synchronized (CONNECTION_ATOMIC_REFERENCE) {
+				if (CONNECTION_ATOMIC_REFERENCE.get() != null) {
+					try {
+						CONNECTION_ATOMIC_REFERENCE.get().close();
+					} catch (JMSException jmse) {
+						jmse.printStackTrace();
+						logger.debug(jmse.getMessage());
+					}
+					CONNECTION_ATOMIC_REFERENCE.set(null);
+				}
+			}
+		}
+	}
 }

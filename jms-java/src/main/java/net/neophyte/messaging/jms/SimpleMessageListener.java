@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SimpleMessageListener implements MessageListener {
-	private static Logger logger = LoggerFactory.getLogger(SimpleConnectionProvider.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(SimpleMessageListener.class);
+
 	@Override
 	public void onMessage(Message msg) {
 		if (msg instanceof TextMessage) {
@@ -27,4 +29,3 @@ public class SimpleMessageListener implements MessageListener {
 		}
 	}
 }
-

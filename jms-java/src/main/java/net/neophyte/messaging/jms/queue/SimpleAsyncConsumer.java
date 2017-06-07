@@ -22,7 +22,8 @@ public class SimpleAsyncConsumer extends AbstractJMSClient {
 	public static void main(String[] arg) {
 		SimpleAsyncConsumer pc = new SimpleAsyncConsumer();
 		System.out.println("-Calling receiveMessages-");
-		pc.recieveMessages(Configuration.getMessageCount(), Configuration.getRuntime());
+		pc.recieveMessages(Configuration.getMessageCount(),
+				Configuration.getRuntime());
 		System.exit(0);
 	}
 
@@ -32,45 +33,44 @@ public class SimpleAsyncConsumer extends AbstractJMSClient {
 		MessageConsumer msgReceiver = null;
 		startTime = System.currentTimeMillis();
 		try {
-			connection = SimpleConnectionProvider.createConnectionInstance(Configuration.getBrokerurl(),
-					Configuration.getUserid(), Configuration.getPassword());
-			session = SimpleConnectionProvider.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration.getQueueName());
+			connection = SimpleConnectionProvider.createConnectionInstance(
+					Configuration.getBrokerurl(), Configuration.getUserid(),
+					Configuration.getPassword());
+			session = SimpleConnectionProvider
+					.getSession(Session.AUTO_ACKNOWLEDGE);
+			Destination destination = session.createQueue(Configuration
+					.getQueueName());
 			msgReceiver = session.createConsumer(destination);
 			msgReceiver.setMessageListener(new SimpleMessageListener());
 			connection.start();
-			while (runTimeRemains(runTime) || moreMessagesToReceive(numOfMessages)) {
+			while (runTimeRemains(runTime)
+					|| moreMessagesToReceive(numOfMessages)) {
 				try {
-                    Thread.sleep(200); /* sleep 200 mili seconds*/
-                }catch(Exception e){
-                    /* ignore */
-                }
+					Thread.sleep(200); /* sleep 200 mili seconds */
+				} catch (Exception e) {
+					/* ignore */
+				}
 			}
-	        long totalRunTime = System.currentTimeMillis() - startTime;
-	        logger.info("Total run time: " + Util.getHh_Mm_Ss_ssss_Time(totalRunTime) 
-	                + ", Total messages consumed: " + msgs.get());
-	        logger.info("Total errors: " + errors.get());
-		}catch (JMSException e) {
+			long totalRunTime = System.currentTimeMillis() - startTime;
+			logger.info("Total run time: "
+					+ Util.getHh_Mm_Ss_ssss_Time(totalRunTime)
+					+ ", Total messages consumed: " + msgs.get());
+			logger.info("Total errors: " + errors.get());
+		} catch (JMSException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
-		}finally {
+		} finally {
 			SimpleConnectionProvider.closeConnection();
 		}
 	}
-	
-/*    private class SimpleMessageListener implements MessageListener {
-        @Override
-        public void onMessage(Message msg) {
-        	try {
-	            msgs.incrementAndGet();
-	            if (msg instanceof TextMessage) {
-					TextMessage textMessage = (TextMessage) msg;
-					System.out.println("Received: " + textMessage.getText());
-				}
-        	}catch(Exception e){
-    	        errors.incrementAndGet();
-    	        logger.info(e.getMessage());
-    	    }
-        }
-    }*/
+
+	/*
+	 * private class SimpleMessageListener implements MessageListener {
+	 * 
+	 * @Override public void onMessage(Message msg) { try {
+	 * msgs.incrementAndGet(); if (msg instanceof TextMessage) { TextMessage
+	 * textMessage = (TextMessage) msg; System.out.println("Received: " +
+	 * textMessage.getText()); } }catch(Exception e){ errors.incrementAndGet();
+	 * logger.info(e.getMessage()); } } }
+	 */
 }

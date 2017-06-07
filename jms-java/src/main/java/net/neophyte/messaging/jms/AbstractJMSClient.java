@@ -15,11 +15,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class AbstractJMSClient {
-	protected final Logger logger = LoggerFactory.getLogger(AbstractJMSClient.class);
+	protected final Logger logger = LoggerFactory
+			.getLogger(AbstractJMSClient.class);
 	protected AtomicInteger msgs = new AtomicInteger(0);
 	protected AtomicInteger errors = new AtomicInteger(0);
 	protected long startTime = 0;
-	
+
 	protected boolean runTimeRemains(long runTime) {
 		if (runTime == Configuration.IGNORE) {
 			return false;
@@ -37,31 +38,32 @@ public abstract class AbstractJMSClient {
 	protected boolean moreMessagesToBrowse(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
-	
+
 	protected boolean moreMessagesToReceive(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
-	
+
 	protected boolean moreMessagesToProduce(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
-	
-    protected class SimpleMessageListener implements MessageListener {
 
-		public SimpleMessageListener() {}
+	protected class SimpleMessageListener implements MessageListener {
+
+		public SimpleMessageListener() {
+		}
 
 		@Override
-        public void onMessage(Message msg) {
-        	try {
-	            msgs.incrementAndGet();
-	            if (msg instanceof TextMessage) {
+		public void onMessage(Message msg) {
+			try {
+				msgs.incrementAndGet();
+				if (msg instanceof TextMessage) {
 					TextMessage textMessage = (TextMessage) msg;
 					System.out.println("Received: " + textMessage.getText());
 				}
-        	}catch(Exception e){
-    	        errors.incrementAndGet();
-    	        logger.info(e.getMessage());
-    	    }
-        }
-    }
+			} catch (Exception e) {
+				errors.incrementAndGet();
+				logger.info(e.getMessage());
+			}
+		}
+	}
 }
