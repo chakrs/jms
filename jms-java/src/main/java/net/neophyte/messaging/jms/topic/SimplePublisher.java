@@ -10,8 +10,8 @@ import javax.jms.Topic;
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.MessageUtil;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.MessageUtil;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS message publisher on a topic

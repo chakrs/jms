@@ -10,7 +10,7 @@ import javax.jms.Session;
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS message consumer that receives messages in async mode

@@ -9,7 +9,7 @@ import javax.jms.Topic;
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS durable topic subscriber that receives message in async mode

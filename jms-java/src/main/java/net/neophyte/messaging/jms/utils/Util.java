@@ -1,4 +1,4 @@
-package net.neophyte.messaging.jms.Utils;
+package net.neophyte.messaging.jms.utils;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
