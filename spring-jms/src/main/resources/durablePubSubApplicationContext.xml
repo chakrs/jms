@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/batch 
+                http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd ">
+
+	<!-- load config.properties which is placed under /resources folder -->
+	<context:property-placeholder location="classpath:config.properties" />
+
+	<!-- To enable annotation configuration. For ex: Used @Autowired in bean 
+		for JMSTemplate. -->
+	<context:annotation-config />
+	<context:component-scan base-package="net.neophyte.messaging.spring.jms" />
+
+	<!-- The connection factory -->
+	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="${broker.url}" />
+		<property name="userName" value="${broker.userName}" />
+		<property name="password" value="${broker.password}" />
+	</bean>
+
+	<!-- The caching connection factory -->
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="connectionFactory" />
+ 		<property name="sessionCacheSize" value="10" />
+		<property name="cacheProducers" value="true" />
+		<property name="cacheConsumers" value="true" />
+		<property name="reconnectOnException" value="true" />
+	     <property name="clientId" value="${topic.client.id}" />
+	</bean>
+	
+	<!-- The message listener bean -->
+	<bean id="messageListener" class="net.neophyte.messaging.spring.jms.async.MyMessageListener" />
+	<!-- application configuration reader bean -->
+	<bean id="appConfigReader" class="net.neophyte.messaging.spring.jms.config.AppConfigReader" />
+	
+	<!-- The topic destination bean -->
+	<bean id="jmsTopicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="${topic.name}" />
+	</bean>
+	
+	<!-- The message listener container bean -->
+	<bean id="myListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<!-- never use concurrentConsumers with topics ! -->
+	    <property name="concurrentConsumers" value="1" />
+	    <property name="connectionFactory" ref="cachingConnectionFactory" />
+	    <property name="destination" ref="jmsTopicDestination" />
+	    <property name="messageListener" ref="messageListener" />
+		<property name="durableSubscriptionName" value="${topic.subscription.name}" />
+		<property name="sessionTransacted" value="true" />
+		<!-- Specify topic style publish/subscribe -->
+	    <property name="pubSubDomain" value="true" />
+		<!-- Will guarantee that we receive messages even broker/app restarts -->
+	     <property name="subscriptionDurable" value="true" />
+	</bean>
+</beans>

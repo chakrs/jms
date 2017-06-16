@@ -1,4 +1,8 @@
 # jms
-This repository provides following simple examples for jms
-- jms-java: provides examples for p2p and pubsub domain messaging
-- spring-jms: provides examples for p2p and pubsub domain messaging using spring jms framework
+This repo contains the following projects
+
+## jms-java
+JMS based messaging applications for message producer, consumer, browser, publisher and subscribers of various flavors.
+
+## spring-jms
+Spring JMS framework based messaging applications for message producer, consumer, browser, publisher and subscribers of various flavors.
