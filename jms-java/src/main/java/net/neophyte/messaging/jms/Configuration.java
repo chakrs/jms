@@ -16,6 +16,7 @@ public abstract class Configuration {
 	private final static int MSG_SIZE_IN_BYTES = 1024;// 1KB
 	private final static int messageCount = 100;
 	private final static long runTime = IGNORE;// 1 minute
+	private final static long receiveTimeout = 10000;
 
 	public static String getBrokerurl() {
 		return brokerUrl;
@@ -47,5 +48,9 @@ public abstract class Configuration {
 
 	public static long getRuntime() {
 		return runTime;
+	}
+
+	public static long getReceivetimeout() {
+		return receiveTimeout;
 	}
 }

@@ -2,10 +2,8 @@ package net.neophyte.messaging.jms.topic;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
@@ -14,15 +12,18 @@ import net.neophyte.messaging.jms.SimpleConnectionProvider;
 import net.neophyte.messaging.jms.utils.Util;
 
 /**
- * A simple JMS topic subscriber that receives message in sync mode
+ * A simple JMS durable topic subscriber that receives message in async mode
  * 
  * @author shuvro
  *
  */
-public class SimpleSyncSubscriber extends AbstractJMSClient {
+public class SimpleDurableAsyncSubscriber extends AbstractJMSClient {
+
+	private static String CLIENT_ID = "myClientId";
+	private static String SUBSCRIPTION_NAME = "myTopicSubscription";
 
 	public static void main(String[] arg) {
-		SimpleSyncSubscriber pc = new SimpleSyncSubscriber();
+		SimpleDurableAsyncSubscriber pc = new SimpleDurableAsyncSubscriber();
 		System.out.println("-Calling subscribeAndReceive-");
 		pc.subscribeAndReceive(Configuration.getMessageCount(),
 				Configuration.getRuntime());
@@ -38,38 +39,46 @@ public class SimpleSyncSubscriber extends AbstractJMSClient {
 			connection = SimpleConnectionProvider.createConnectionInstance(
 					Configuration.getBrokerurl(), Configuration.getUserid(),
 					Configuration.getPassword());
+			/*
+			 * Note that we have to set the client id before the connection has
+			 * been used at all
+			 */
+			connection.setClientID(CLIENT_ID);
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
 			Topic topic = session.createTopic(Configuration.getTopicName());
-			msgReceiver = session.createConsumer(topic);
-			connection.start();
+			/*
+			 * Creates an unshared durable subscription on the specified topic
+			 * (if one does not already exist) and creates a consumer on that
+			 * durable subscription. So, once this program runs and a
+			 * subscription is created, trying to run another instance of this
+			 * program would fail and cause an exception because of the unshared
+			 * nature of this durable connection. To overcome this problem one
+			 * would have to use the createSharedConsumer method if the JMS
+			 * provider supports it.
+			 */
+			msgReceiver = session.createDurableSubscriber(topic,
+					SUBSCRIPTION_NAME);
 
-			Message receivedMessage = null;
+			msgReceiver.setMessageListener(new SimpleMessageListener());
+			connection.start();
 			while (runTimeRemains(runTime)
 					|| moreMessagesToReceive(numOfMessages)) {
 				try {
-					receivedMessage = msgReceiver.receive(Configuration.getReceivetimeout());
-					if (Util.isNotNull(receivedMessage)) {
-						msgs.incrementAndGet();
-						if (receivedMessage instanceof TextMessage) {
-							TextMessage textMessage = (TextMessage) receivedMessage;
-							System.out.println("Received: "
-									+ textMessage.getText());
-						}
-					}
+					Thread.sleep(200); /* sleep 200 mili seconds */
 				} catch (Exception e) {
-					errors.incrementAndGet();
-					logger.info(e.getMessage());
+					e.printStackTrace();
 				}
 			}
+			
 			long totalRunTime = System.currentTimeMillis() - startTime;
 			logger.info("Total run time: "
 					+ Util.getHh_Mm_Ss_ssss_Time(totalRunTime)
 					+ ", Total messages received: " + msgs.get());
 			logger.info("Total errors: " + errors.get());
 		} catch (JMSException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			SimpleConnectionProvider.closeConnection();
 		}

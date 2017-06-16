@@ -6,6 +6,7 @@ import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -13,7 +14,7 @@ import javax.jms.TextMessage;
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS message browser
@@ -42,10 +43,10 @@ public class SimpleBrowser extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration
+			Queue queue = session.createQueue(Configuration
 					.getQueueName());
 			connection.start();
-			browser = session.createBrowser((javax.jms.Queue) destination);
+			browser = session.createBrowser(queue);
 
 			@SuppressWarnings("unchecked")
 			Enumeration<Message> messagesStream = (Enumeration<Message>) browser

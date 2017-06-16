@@ -8,6 +8,11 @@ import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author shuvro
+ *
+ */
 public class SimpleMessageListener implements MessageListener {
 	private static Logger logger = LoggerFactory
 			.getLogger(SimpleMessageListener.class);

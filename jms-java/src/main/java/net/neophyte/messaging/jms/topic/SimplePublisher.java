@@ -1,17 +1,17 @@
 package net.neophyte.messaging.jms.topic;
 
 import javax.jms.DeliveryMode;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.MessageUtil;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.MessageUtil;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS message publisher on a topic
@@ -21,7 +21,7 @@ import net.neophyte.messaging.jms.Utils.Util;
  */
 public class SimplePublisher extends AbstractJMSClient {
 
-	public static void main(String[] a) {
+	public static void main(String[] arg) {
 		SimplePublisher pc = new SimplePublisher();
 		System.out.println("-Calling sendMessage-");
 		pc.publishMessages(Configuration.getMessageCount(),
@@ -39,9 +39,8 @@ public class SimplePublisher extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createTopic(Configuration
-					.getTopicName());
-			msgSender = session.createProducer(destination);
+			Topic topic = session.createTopic(Configuration.getTopicName());
+			msgSender = session.createProducer(topic);
 			msgSender.setDeliveryMode(DeliveryMode.PERSISTENT);
 			TextMessage message = null;
 			while (runTimeRemains(runTime)

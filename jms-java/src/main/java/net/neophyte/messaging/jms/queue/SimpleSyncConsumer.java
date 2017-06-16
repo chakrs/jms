@@ -5,13 +5,14 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS message consumer that receives messages in sync mode
@@ -40,16 +41,16 @@ public class SimpleSyncConsumer extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration
+			Queue queue = session.createQueue(Configuration
 					.getQueueName());
-			msgReceiver = session.createConsumer(destination);
+			msgReceiver = session.createConsumer(queue);
 			connection.start();
 
 			Message receivedMessage = null;
 			while (runTimeRemains(runTime)
 					|| moreMessagesToReceive(numOfMessages)) {
 				try {
-					receivedMessage = msgReceiver.receive(1000);
+					receivedMessage = msgReceiver.receive(Configuration.getReceivetimeout());
 					if (Util.isNotNull(receivedMessage)) {
 						msgs.incrementAndGet();
 						if (receivedMessage instanceof TextMessage) {

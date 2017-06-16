@@ -1,15 +1,15 @@
 package net.neophyte.messaging.jms.topic;
 
 import javax.jms.Connection;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+import javax.jms.Topic;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
 import net.neophyte.messaging.jms.SimpleConnectionProvider;
-import net.neophyte.messaging.jms.Utils.Util;
+import net.neophyte.messaging.jms.utils.Util;
 
 /**
  * A simple JMS topic subscriber that receives message in async mode
@@ -19,7 +19,7 @@ import net.neophyte.messaging.jms.Utils.Util;
  */
 public class SimpleAsyncSubscriber extends AbstractJMSClient {
 
-	public static void main(String[] a) {
+	public static void main(String[] arg) {
 		SimpleAsyncSubscriber pc = new SimpleAsyncSubscriber();
 		System.out.println("-Calling subscribeAndReceive-");
 		pc.subscribeAndReceive(Configuration.getMessageCount(),
@@ -38,9 +38,8 @@ public class SimpleAsyncSubscriber extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createTopic(Configuration
-					.getTopicName());
-			msgReceiver = session.createConsumer(destination);
+			Topic topic = session.createTopic(Configuration.getTopicName());
+			msgReceiver = session.createConsumer(topic);
 			msgReceiver.setMessageListener(new SimpleMessageListener());
 			connection.start();
 			while (runTimeRemains(runTime)
@@ -48,7 +47,7 @@ public class SimpleAsyncSubscriber extends AbstractJMSClient {
 				try {
 					Thread.sleep(200); /* sleep 200 mili seconds */
 				} catch (Exception e) {
-					/* ignore */
+					e.printStackTrace();
 				}
 			}
 			long totalRunTime = System.currentTimeMillis() - startTime;
