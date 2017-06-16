@@ -3,6 +3,8 @@
  */
 package net.neophyte.messaging.spring.jms.pubsub;
 
+import javax.jms.Message;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,7 +21,7 @@ public class PublisherApp {
 
 	private static Logger logger = LoggerFactory.getLogger(PublisherApp.class);
 
-	/**
+	/** 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -32,7 +34,7 @@ public class PublisherApp {
 			String topicName = acr.getConfig(Constants.TOPIC_NAME_PROP);
 			for (int i = 0; i < 10; i++) {
 				String msg = "msg: " + i;
-				jqs.sendTextMessage(topicName, Constants.MSG_DEFAULT_PRIORITY, msg);
+				jqs.sendTextMessage(topicName, Message.DEFAULT_PRIORITY, msg);
 				System.out.println("Sent: " + msg);
 			}
 		} catch (Exception e) {

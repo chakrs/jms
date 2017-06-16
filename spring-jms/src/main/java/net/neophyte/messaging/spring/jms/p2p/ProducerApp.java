@@ -3,6 +3,8 @@
  */
 package net.neophyte.messaging.spring.jms.p2p;
 
+import javax.jms.Message;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,7 +21,7 @@ public class ProducerApp {
 
 	private static Logger logger = LoggerFactory.getLogger(ProducerApp.class);
 
-	/**
+	/** 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -31,7 +33,7 @@ public class ProducerApp {
 			AppConfigReader acr = (AppConfigReader) appContext.getBean(Constants.APP_CONFIG_READER_BEAN_ID);
 			String queueName = acr.getConfig(Constants.QUEUE_NAME_PROP);
 			for (int i = 0; i < 10; i++) {
-				jqs.sendTextMessage(queueName, Constants.MSG_DEFAULT_PRIORITY, "msg: " + i);
+				jqs.sendTextMessage(queueName, Message.DEFAULT_PRIORITY, "msg: " + i);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
