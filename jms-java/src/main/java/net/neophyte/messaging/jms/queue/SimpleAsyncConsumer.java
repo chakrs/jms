@@ -4,6 +4,7 @@ import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
@@ -38,9 +39,9 @@ public class SimpleAsyncConsumer extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration
+			Queue queue = session.createQueue(Configuration
 					.getQueueName());
-			msgReceiver = session.createConsumer(destination);
+			msgReceiver = session.createConsumer(queue);
 			msgReceiver.setMessageListener(new SimpleMessageListener());
 			connection.start();
 			while (runTimeRemains(runTime)
@@ -48,7 +49,7 @@ public class SimpleAsyncConsumer extends AbstractJMSClient {
 				try {
 					Thread.sleep(200); /* sleep 200 mili seconds */
 				} catch (Exception e) {
-					/* ignore */
+					e.printStackTrace();
 				}
 			}
 			long totalRunTime = System.currentTimeMillis() - startTime;

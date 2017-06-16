@@ -3,6 +3,7 @@ package net.neophyte.messaging.jms.queue;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
@@ -38,9 +39,9 @@ public class SimpleProducer extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration
+			Queue queue = session.createQueue(Configuration
 					.getQueueName());
-			msgSender = session.createProducer(destination);
+			msgSender = session.createProducer(queue);
 			msgSender.setDeliveryMode(DeliveryMode.PERSISTENT);
 			TextMessage message = null;
 			while (runTimeRemains(runTime)

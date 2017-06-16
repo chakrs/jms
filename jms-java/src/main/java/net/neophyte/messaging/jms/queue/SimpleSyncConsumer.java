@@ -5,6 +5,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
@@ -40,16 +41,16 @@ public class SimpleSyncConsumer extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createQueue(Configuration
+			Queue queue = session.createQueue(Configuration
 					.getQueueName());
-			msgReceiver = session.createConsumer(destination);
+			msgReceiver = session.createConsumer(queue);
 			connection.start();
 
 			Message receivedMessage = null;
 			while (runTimeRemains(runTime)
 					|| moreMessagesToReceive(numOfMessages)) {
 				try {
-					receivedMessage = msgReceiver.receive(1000);
+					receivedMessage = msgReceiver.receive(Configuration.getReceivetimeout());
 					if (Util.isNotNull(receivedMessage)) {
 						msgs.incrementAndGet();
 						if (receivedMessage instanceof TextMessage) {

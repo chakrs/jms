@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An dumb utility class to create JMS connection. It does not contain any logic
- * to manage connections. It provides functionality for creation and closing of
- * the connection.
+ * A dumb Singleton utility class to create JMS connection. It does not contain
+ * any logic to manage connections. It provides functionality for creation and
+ * closing of the connection. It also does not try to hide the connection object
  *
  * @author shuvro
  */

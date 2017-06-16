@@ -21,6 +21,14 @@ public abstract class AbstractJMSClient {
 	protected AtomicInteger errors = new AtomicInteger(0);
 	protected long startTime = 0;
 
+	/**
+	 * Returns if run time is over or not
+	 * 
+	 * @param runTime
+	 *            The time to run
+	 * @return <code>true</code> if run time remains otherwise
+	 *         <code>false</code>
+	 */
 	protected boolean runTimeRemains(long runTime) {
 		if (runTime == Configuration.IGNORE) {
 			return false;
@@ -28,6 +36,13 @@ public abstract class AbstractJMSClient {
 		return (System.currentTimeMillis() - startTime) < runTime;
 	}
 
+	/**
+	 * 
+	 * @param messageCount
+	 *            The number of messages to count
+	 * @return <code>true</code> if not all messages produced otherwise
+	 *         <code>false</code>
+	 */
 	private boolean moreMessagesToCount(long messageCount) {
 		if (messageCount == Configuration.IGNORE) {
 			return false;
@@ -35,18 +50,45 @@ public abstract class AbstractJMSClient {
 		return msgs.get() < messageCount;
 	}
 
+	/**
+	 * 
+	 * @param messageCount
+	 *            The number of messages to browse
+	 * @return <code>true</code> if not all messages browsed otherwise
+	 *         <code>false</code>
+	 */
 	protected boolean moreMessagesToBrowse(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
 
+	/**
+	 * 
+	 * @param messageCount
+	 *            The number of messages to receive
+	 * @return <code>true</code> if not all messages received otherwise
+	 *         <code>false</code>
+	 */
 	protected boolean moreMessagesToReceive(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
 
+	/**
+	 * 
+	 * @param messageCount
+	 *            The number of messages to produce
+	 * @return <code>true</code> if not all messages produced otherwise
+	 *         <code>false</code>
+	 */
 	protected boolean moreMessagesToProduce(long messageCount) {
 		return moreMessagesToCount(messageCount);
 	}
 
+	/**
+	 * 
+	 * A simple message listener that can be used to receive messages
+	 * asynchronously
+	 *
+	 */
 	protected class SimpleMessageListener implements MessageListener {
 
 		public SimpleMessageListener() {

@@ -1,12 +1,12 @@
 package net.neophyte.messaging.jms.topic;
 
 import javax.jms.Connection;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 import net.neophyte.messaging.jms.AbstractJMSClient;
 import net.neophyte.messaging.jms.Configuration;
@@ -21,7 +21,7 @@ import net.neophyte.messaging.jms.Utils.Util;
  */
 public class SimpleSyncSubscriber extends AbstractJMSClient {
 
-	public static void main(String[] a) {
+	public static void main(String[] arg) {
 		SimpleSyncSubscriber pc = new SimpleSyncSubscriber();
 		System.out.println("-Calling subscribeAndReceive-");
 		pc.subscribeAndReceive(Configuration.getMessageCount(),
@@ -40,16 +40,15 @@ public class SimpleSyncSubscriber extends AbstractJMSClient {
 					Configuration.getPassword());
 			session = SimpleConnectionProvider
 					.getSession(Session.AUTO_ACKNOWLEDGE);
-			Destination destination = session.createTopic(Configuration
-					.getTopicName());
-			msgReceiver = session.createConsumer(destination);
+			Topic topic = session.createTopic(Configuration.getTopicName());
+			msgReceiver = session.createConsumer(topic);
 			connection.start();
 
 			Message receivedMessage = null;
 			while (runTimeRemains(runTime)
 					|| moreMessagesToReceive(numOfMessages)) {
 				try {
-					receivedMessage = msgReceiver.receive(1000);
+					receivedMessage = msgReceiver.receive(Configuration.getReceivetimeout());
 					if (Util.isNotNull(receivedMessage)) {
 						msgs.incrementAndGet();
 						if (receivedMessage instanceof TextMessage) {
