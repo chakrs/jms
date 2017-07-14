@@ -15,15 +15,15 @@ public class JmsRoute extends RouteBuilder {
 	static final Logger log = LoggerFactory.getLogger(JmsRoute.class);
 	
 	@Override
-	public void configure() throws Exception {
+	public void configure() throws Exception {/*
 		// TODO Auto-generated method stub
-	/*	from("{{inbound.endpoint}}")
+		from("{{inbound.endpoint}}")
 		.transacted()
 		.log(LoggingLevel.INFO, log, "Received Message")
 		.process(new Processor(){
 			
 			public void process(Exchange exchange)throws Exception{
-				log.info("Exchange {}", exchange);
+				log.info("Exchange {}", exchange.getIn());
 
 			}
 		})
@@ -32,10 +32,10 @@ public class JmsRoute extends RouteBuilder {
 		.simple("{{outbound.loop.count}}")
 		.to("{{outbound.endpoint}}")
 		.log(LoggingLevel.INFO, log, "Message sent. Iteration: ${property.CamelLoopIndex}")
-		.end();*/
+		.end();
 
 		
 		
-	}
+	*/}
 
 }

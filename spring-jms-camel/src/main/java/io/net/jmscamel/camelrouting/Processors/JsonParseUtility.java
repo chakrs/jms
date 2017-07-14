@@ -1,4 +1,4 @@
-package io.net.jmscamel.camelrouting.routing;
+package io.net.jmscamel.camelrouting.Processors;
 
 import org.apache.camel.Message;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,58 +1,52 @@
 package io.net.jmscamel.camelrouting.routing;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import io.net.jmscamel.camelrouting.Processors.JsonParseUtility;
+import io.net.jmscamel.camelrouting.Processors.MyItem;
+import io.net.jmscamel.camelrouting.Processors.MyProcessor;
+import io.net.jmscamel.camelrouting.Processors.MyService;
 
 @Component
 public class MyOwnRouter extends RouteBuilder {
 		
+		@Autowired
+		private MyProcessor myProcessor;
 		
-		String queueIn = "jms:TEST.QUEUE";
-		
-		String queueOut_1 = "jms:queue:OUT_1";
-		
-		String queueOut_2 = "jms:queue:OUT_2";
-		
-		String queueOut_3 = "jms:queue:OUT_3";
+		@Autowired
+		private JsonParseUtility parseUtility;
+
+		@Autowired
+		private MyService myservice;
 		
 	    @Override
 	    public void configure() throws Exception {
-	    	        
 	    	
-	    	//String dirSource = "C:/temp/Camel/camelinaction-master/chapter7/file/src/main/resources/";
-	    	String dirSource = "C:/camelInputFolder/";
-	    	//String dirTarget = "C:/camelOutputFolder/";
-	    	String dirTarget = dirSource + "target/";
-	    	String fileName = "myJson.txt";
-	    	String fromEndpoint = String.format("file://%s?fileName=%s&noop=true", dirSource, fileName);
-	    	String toEndpoint = String.format("file://%s?fileName=%s", dirTarget, fileName);
-	    	//from(fromEndpoint).to(toEndpoint);
+	    	from("{{inbound.endpoint}}")
+	    	.routeId("myRouteId")
+	    	/*.process(myProcessor)
+	    	/*.end()	    	
+	    	.log(LoggingLevel.INFO, log, "Process ended");*/
 	    	
-	    		    	
-	    	
-	    	from("file://C:/camelInputFolder/").process(new Processor() {
-	    		  public void process(Exchange exchange) throws Exception {
-	    		    Object body = exchange.getIn().getBody();
-	    		    
-	    		    // do some business logic with the input body
-	    		  }
-	    		});	    	
-	    
-	    	from("file://C:/camelInputFolder/").convertBodyTo(String.class).to("jms:TEST.QUEUE");
-	    	
-	    	from(queueIn)
-	        .choice()
-	        	.when()
-	        		.simple("${body} contains 'activemq'")
-	        		.to(queueOut_1)
-	        	.when()
-	         	 	.simple("${body} contains 'mqseries'")
-	         	 	.to(queueOut_2)
-	         	.otherwise()
-	         		.to(queueOut_3)
-	        .endChoice();
-	    }	
+	    	.process(new Processor(){
+				
+				public void process(Exchange exchange)throws Exception{
+					log.info("Exchange {}", exchange.getIn());
+					Message message = exchange.getIn();
+					MyItem myItem = parseUtility.getParseFromMessage(message, MyItem.class);
+		
+					myservice.implementSomeCRUD(myItem);
 
+				}
+			})
+	    	.to("{{outbound.endpoint}}");
+
+	    }	
 }
+
