@@ -2,15 +2,19 @@ package io.net.jmscamel.camelrouting.Processors;
 
 import org.apache.camel.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.io.Reader; 
 import java.io.StringReader;
+import java.io.File;
 import java.io.IOException;
 
-
-
+@Component
 public class JsonParseUtility {
 	
 	@Autowired
@@ -26,9 +30,8 @@ public class JsonParseUtility {
 	
 	public <T> T getParseFromObject(Object obj,Class<T> clazz)throws Exception{
 		Object parsed = null;
-		//byte[] bytes = (byte[])msg.getBody();
-		//String actualMessage = new String(bytes);
-		
+		//localMapper.writeValue(new File("C:\\Users\\Hima.Pothana\\file.json"), obj);
+		//parsed = localMapper.readValue(new File("C:\\Users\\Hima.Pothana\\file.json"), clazz);
 		String actualMessage = localMapper.writeValueAsString(obj);
 		parsed =localMapper.readValue(actualMessage, clazz);
 		return (T) parsed;
@@ -36,10 +39,7 @@ public class JsonParseUtility {
 	
 	public <T> T getParseFromString(String str,Class<T> clazz)throws Exception{
 		Object parsed = null;
-		//byte[] bytes = (byte[])msg.getBody();
-		//String actualMessage = new String(bytes);
-		Reader actualMessage = new StringReader(str);
-	//	String actualMessage = localMapper.writeValueAsString(obj);
+		Reader actualMessage = new StringReader(str);		
 		parsed =localMapper.readValue(actualMessage, clazz);
 		return (T) parsed;
 	}

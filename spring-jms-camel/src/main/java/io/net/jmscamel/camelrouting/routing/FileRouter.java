@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class FileRouter extends RouteBuilder {
 		
 		
-		String queueIn = "jms:TEST.QUEUE";
+		String queueIn = "jms:queue:TEST.QUEUE";
 		
 		String queueOut_1 = "jms:queue:OUT_1";
 		
@@ -18,8 +18,8 @@ public class FileRouter extends RouteBuilder {
 		String queueOut_3 = "jms:queue:OUT_3";
 		
 	    @Override
-	    public void configure() throws Exception {/*
-	    	        
+	    public void configure() throws Exception {
+	    	      
 	    	
 	    	String dirSource = "C:/camelInputFolder/";	    	
 	    	String dirTarget = dirSource + "target/";
@@ -29,23 +29,20 @@ public class FileRouter extends RouteBuilder {
 	    	//from(fromEndpoint).to(toEndpoint);	
 	     	
 	    
-	    	from("file://C:/camelInputFolder/").convertBodyTo(String.class).to(queueOut_1);
+	    	from("file://C:/camelInputFolder/").convertBodyTo(String.class).to(queueIn);
 	    	
-	    	from(queueIn)
+	    	from(queueIn)	    	
 	        .choice()
 	        	.when()
 	        		.simple("${body} contains 'activemq'")
 	        		.to(queueOut_1)
 	        	.when()
-	         	 	.simple("${body} contains 'mqseries'")
+	         	 	.simple("${body} contains 'ibmmq'")
 	         	 	.to(queueOut_2)
 	         	.otherwise()
 	         		.to(queueOut_3)
 	        .endChoice();
 	    	
-	    	
-	    	
-	    	
-	    */}	
+	    }	
 
 }
