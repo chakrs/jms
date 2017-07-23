@@ -3,9 +3,9 @@ package io.net.jmscamel.camelrouting.Processors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyService {
+public class ItemService {
 	
-	public void implementSomeCRUD(MyItem myItem){
+	public void implementSomeCRUD(Item myItem){
 		
 		// connect to some dao layer or some database / backend system to persist the data 
 		

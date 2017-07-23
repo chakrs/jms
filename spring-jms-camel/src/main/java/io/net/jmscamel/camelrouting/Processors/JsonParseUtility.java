@@ -30,8 +30,6 @@ public class JsonParseUtility {
 	
 	public <T> T getParseFromObject(Object obj,Class<T> clazz)throws Exception{
 		Object parsed = null;
-		//localMapper.writeValue(new File("C:\\Users\\Hima.Pothana\\file.json"), obj);
-		//parsed = localMapper.readValue(new File("C:\\Users\\Hima.Pothana\\file.json"), clazz);
 		String actualMessage = localMapper.writeValueAsString(obj);
 		parsed =localMapper.readValue(actualMessage, clazz);
 		return (T) parsed;

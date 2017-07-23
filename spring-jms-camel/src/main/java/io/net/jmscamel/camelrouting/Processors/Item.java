@@ -1,20 +1,21 @@
 package io.net.jmscamel.camelrouting.Processors;
 
-public class MyItem {
+
+public class Item {
 	
 	private String id;
 	private String code;
 	private String name;
 	
-	public MyItem(){
-					
+	public Item(){
+		
 	}
 	
-	/*public MyItem(String id, String code, String name){
+	public Item(String id, String code, String name){
 		this.id = id;
 		this.code = code;
 		this.name = name;				
-	}*/
+	}
 
 	public String getId() {
 		return id;
