@@ -9,15 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JmsRoute extends RouteBuilder {
+public class QueueToMultiTransportRouter extends RouteBuilder {
 
 	
-	static final Logger log = LoggerFactory.getLogger(JmsRoute.class);
+	static final Logger log = LoggerFactory.getLogger(QueueToMultiTransportRouter.class);
 	
 	@Override
 	public void configure() throws Exception {
 		
-		from("{{inbound.endpoint}}")
+		from("{{inbound.endpoint}}")	
 		.transacted()
 		.log(LoggingLevel.INFO, log, "Received Message")
 		.startupOrder(1)

@@ -11,7 +11,7 @@ import io.net.jmscamel.camelrouting.Processors.ItemProcessor;
 
 
 @Component
-public class ItemRouter extends RouteBuilder {
+public class CamelComponentsRouter extends RouteBuilder {
 		
 		@Autowired
 		private ItemProcessor itemProcessor;
